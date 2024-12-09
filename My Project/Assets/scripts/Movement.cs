@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
+    private float doubleJump;
 
     private void Awake()
     {
@@ -34,6 +35,11 @@ public class Movement : MonoBehaviour
         anim.SetBool("Run", horizontalInput != 0);
         anim.SetBool("Grounded", isGrounded());
 
+        if (isGrounded() || onWall())
+            {
+                doubleJump = 1;
+            }
+                
         //Wall jump logic
         if (wallJumpCooldown > 0.2f)
         {
@@ -41,7 +47,7 @@ public class Movement : MonoBehaviour
 
             if (onWall() && !isGrounded())
             {
-                body.gravityScale = 0;
+                body.gravityScale = 1;
                 body.velocity = Vector2.zero;
             }
             else
@@ -52,6 +58,13 @@ public class Movement : MonoBehaviour
         }
         else
             wallJumpCooldown += Time.deltaTime;
+        
+        if(Input.GetButtonDown("Jump") && doubleJump > 0 && !isGrounded() && !onWall() && wallJumpCooldown > 0.2f)
+        {
+            DoubleJump();
+        }
+        
+        
     }
 
     private void Jump()
@@ -88,5 +101,12 @@ public class Movement : MonoBehaviour
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null;
+    }
+
+    private void DoubleJump()
+    {
+        body.velocity = new Vector2(body.velocity.x, jumpPower);
+        anim.SetTrigger("jump");
+        doubleJump--;
     }
 }
