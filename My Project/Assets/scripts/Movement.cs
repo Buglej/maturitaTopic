@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    public CollManagement collection;
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
@@ -13,12 +14,15 @@ public class Movement : MonoBehaviour
     private float horizontalInput;
     private float doubleJump;
 
+    
+
     private void Awake()
     {
         //Grab references for rigidbody and animator from object
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+        collection = GameObject.Find("Collection Obj").GetComponent<CollManagement>();
     }
 
     private void Update()
@@ -45,7 +49,7 @@ public class Movement : MonoBehaviour
         {
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
-            if (onWall() && !isGrounded())
+            if (onWall() && !isGrounded() && collection.collItems >= 1)
             {
                 body.gravityScale = 1;
                 body.velocity = Vector2.zero;
@@ -74,9 +78,9 @@ public class Movement : MonoBehaviour
             body.velocity = new Vector2(body.velocity.x, jumpPower);
             anim.SetTrigger("jump");
         }
-        else if (onWall() && !isGrounded())
+        else if (onWall() && !isGrounded() && collection.collItems >= 1)
         {
-            if (horizontalInput == 0)
+            if (horizontalInput == 0) 
             {
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
                 transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -86,10 +90,6 @@ public class Movement : MonoBehaviour
 
             wallJumpCooldown = 0;
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
     }
 
     private bool isGrounded()
@@ -105,8 +105,11 @@ public class Movement : MonoBehaviour
 
     private void DoubleJump()
     {
-        body.velocity = new Vector2(body.velocity.x, jumpPower);
-        anim.SetTrigger("jump");
-        doubleJump--;
+        if (collection.collItems >= 2)
+        {
+            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            anim.SetTrigger("jump");
+            doubleJump--;
+        }
     }
 }
