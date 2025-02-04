@@ -57,7 +57,7 @@ public class Movement : MonoBehaviour
             else
                 body.gravityScale = 7;
 
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetButtonDown("Jump"))
                 Jump();
         }
         else
