@@ -47,12 +47,12 @@ public class Movement : MonoBehaviour
         //Wall jump logic
         if (wallJumpCooldown > 0.2f)
         {
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+            body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
 
             if (onWall() && !isGrounded() && collection.collItems >= 1)
             {
                 body.gravityScale = 1;
-                body.velocity = Vector2.zero;
+                body.linearVelocity = Vector2.zero;
             }
             else
                 body.gravityScale = 7;
@@ -75,18 +75,18 @@ public class Movement : MonoBehaviour
     {
         if (isGrounded())
         {
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
             anim.SetTrigger("jump");
         }
         else if (onWall() && !isGrounded() && collection.collItems >= 1)
         {
             if (horizontalInput == 0) 
             {
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
                 transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
             else
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
 
             wallJumpCooldown = 0;
         }
@@ -107,7 +107,7 @@ public class Movement : MonoBehaviour
     {
         if (collection.collItems >= 2)
         {
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
             anim.SetTrigger("jump");
             doubleJump--;
         }
