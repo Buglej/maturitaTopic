@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public CollManagement collection;
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private LayerMask cornerLayer;
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D boxCollider;
@@ -15,15 +13,12 @@ public class Movement : MonoBehaviour
     private float horizontalInput;
     private float doubleJump;
 
-    
-
-    private void Awake()
+    private void Start()
     {
         //Grab references for rigidbody and animator from object
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
-        collection = GameObject.Find("Collection Obj").GetComponent<CollManagement>();
     }
 
     private void Update()
@@ -50,7 +45,7 @@ public class Movement : MonoBehaviour
         {
             body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
 
-            if (onWall() && !isGrounded() && collection.collItems >= 1)
+            if (onWall() && !isGrounded())
             {
                 body.gravityScale = 1;
                 body.linearVelocity = Vector2.zero;
@@ -58,7 +53,7 @@ public class Movement : MonoBehaviour
             else
                 body.gravityScale = 7;
 
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetKey(KeyCode.Space))
                 Jump();
         }
         else
@@ -76,12 +71,12 @@ public class Movement : MonoBehaviour
     {
         if (isGrounded())
         {
-            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+            body.velocity = new Vector2(body.velocity.x, jumpPower);
             anim.SetTrigger("jump");
         }
-        else if (onWall() && !isGrounded() && collection.collItems >= 1)
+        else if (onWall() && !isGrounded())
         {
-            if (horizontalInput == 0) 
+            if (horizontalInput == 0)
             {
                 body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
                 transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -93,24 +88,25 @@ public class Movement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+    }
+
     private bool isGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer | cornerLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
         return raycastHit.collider != null;
     }
     private bool onWall()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer | cornerLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null;
     }
 
     private void DoubleJump()
     {
-        if (collection.collItems >= 2)
-        {
-            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
-            anim.SetTrigger("jump");
-            doubleJump--;
-        }
+        body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+        anim.SetTrigger("jump");
+        doubleJump--;
     }
 }
