@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    public CollManagement collection;
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask cornerLayer;
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D boxCollider;
@@ -13,12 +15,15 @@ public class Movement : MonoBehaviour
     private float horizontalInput;
     private float doubleJump;
 
+    
+
     private void Awake()
     {
         //Grab references for rigidbody and animator from object
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+        collection = GameObject.Find("Collection Obj").GetComponent<CollManagement>();
     }
 
     private void Update()
@@ -43,17 +48,17 @@ public class Movement : MonoBehaviour
         //Wall jump logic
         if (wallJumpCooldown > 0.2f)
         {
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+            body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
 
-            if (onWall() && !isGrounded())
+            if (onWall() && !isGrounded() && collection.collItems >= 1)
             {
                 body.gravityScale = 1;
-                body.velocity = Vector2.zero;
+                body.linearVelocity = Vector2.zero;
             }
             else
                 body.gravityScale = 7;
 
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetButtonDown("Jump"))
                 Jump();
         }
         else
@@ -71,42 +76,41 @@ public class Movement : MonoBehaviour
     {
         if (isGrounded())
         {
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
             anim.SetTrigger("jump");
         }
-        else if (onWall() && !isGrounded())
+        else if (onWall() && !isGrounded() && collection.collItems >= 1)
         {
-            if (horizontalInput == 0)
+            if (horizontalInput == 0) 
             {
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
                 transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
             else
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
 
             wallJumpCooldown = 0;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-    }
-
     private bool isGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer | cornerLayer);
         return raycastHit.collider != null;
     }
     private bool onWall()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer | cornerLayer);
         return raycastHit.collider != null;
     }
 
     private void DoubleJump()
     {
-        body.velocity = new Vector2(body.velocity.x, jumpPower);
-        anim.SetTrigger("jump");
-        doubleJump--;
+        if (collection.collItems >= 2)
+        {
+            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+            anim.SetTrigger("jump");
+            doubleJump--;
+        }
     }
 }
