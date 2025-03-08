@@ -10,7 +10,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private LayerMask cornerLayer;
     private Rigidbody2D body;
     private Animator anim;
-    private BoxCollider2D boxCollider;
+    private BoxCollider2D BoxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
     private float doubleJump;
@@ -22,12 +22,28 @@ public class Movement : MonoBehaviour
         //Grab references for rigidbody and animator from object
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCollider = GetComponent<BoxCollider2D>();
+        BoxCollider = GetComponent<BoxCollider2D>();
         collection = GameObject.Find("Collection Obj").GetComponent<CollManagement>();
     }
 
     private void Update()
     {
+        if (body.linearVelocity.y > 0 && !isGrounded() && !onWall())
+        {
+            anim.SetTrigger("Jump");
+        }
+        else if (body.linearVelocity.y < 0 && !isGrounded() && !onWall()){
+            anim.SetTrigger("Fall");
+        }
+
+        if (isGrounded())
+        {
+            Debug.Log("is on ground");
+        }
+        else if (onWall())
+        {
+            Debug.Log("is on wall");
+        }
         horizontalInput = Input.GetAxis("Horizontal");
 
         //Flip player when moving left-right
@@ -40,7 +56,9 @@ public class Movement : MonoBehaviour
             transform.localScale = new Vector3(-1, 1, 1);
         }
         //Set animator parameters
-        anim.SetBool("Run", horizontalInput != 0);
+        if (isGrounded()){
+            anim.SetBool("Run", horizontalInput != 0);
+        }
         anim.SetBool("Grounded", isGrounded());
 
         if (isGrounded() || onWall())
@@ -57,6 +75,7 @@ public class Movement : MonoBehaviour
             {
                 body.gravityScale = 1;
                 body.linearVelocity = Vector2.zero;
+                anim.SetBool("WallSlide", true);
             }
             else
                 body.gravityScale = 7;
@@ -80,7 +99,7 @@ public class Movement : MonoBehaviour
         if (isGrounded())
         {
             body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
-            anim.SetTrigger("jump");
+
         }
         else if (onWall() && !isGrounded() && collection.collItems >= 1)
         {
@@ -98,13 +117,18 @@ public class Movement : MonoBehaviour
 
     private bool isGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer | cornerLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(BoxCollider.bounds.center, BoxCollider.bounds.size*1.01f, 0, Vector2.down, 0.1f, groundLayer | cornerLayer);
         return raycastHit.collider != null;
     }
     private bool onWall()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer | cornerLayer);
-        return raycastHit.collider != null;
+        RaycastHit2D raycastHit = Physics2D.BoxCast(BoxCollider.bounds.center, BoxCollider.bounds.size*1.01f, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer | cornerLayer);
+        if (collection.collItems >= 1)
+        {
+            return raycastHit.collider != null;
+        }
+        else
+            return false;
     }
 
     private void DoubleJump()
@@ -112,7 +136,6 @@ public class Movement : MonoBehaviour
         if (collection.collItems >= 2)
         {
             body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
-            anim.SetTrigger("jump");
             doubleJump--;
         }
     }
