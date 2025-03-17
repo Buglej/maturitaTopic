@@ -29,10 +29,10 @@ public class Bandit : MonoBehaviour {
         dmgRange = GetComponent<BoxCollider2D>();
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
-        m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
+        m_groundSensor = GetComponentInChildren<Sensor_Bandit>();
         movement = GameObject.Find("Player").GetComponent<Movement>();
         player = GameObject.Find("Player");
-        hitbox = transform.Find("PlayerSensor").GetComponent<CapsuleCollider2D>();
+        hitbox = GetComponentInChildren<CapsuleCollider2D>();
     }
     
     // Update is called once per frame

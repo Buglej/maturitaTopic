@@ -13,10 +13,10 @@ public class banditAttackTrigger : MonoBehaviour
 
     void Start()
     {
-        m_body2d = GameObject.Find("HeavyBandit").GetComponent<Rigidbody2D>();
+        m_body2d = GetComponentInParent<Rigidbody2D>();
         playerCombat = GameObject.Find("Player").GetComponent<playerCombat>();
-        bandit = GameObject.Find("HeavyBandit").GetComponent<Bandit>();
-        animator = GameObject.Find("HeavyBandit").GetComponent<Animator>();
+        bandit = GetComponentInParent<Bandit>();
+        animator = GetComponentInParent<Animator>();
     }
 
     public void Death()

@@ -9,6 +9,7 @@ public class playerCombat : MonoBehaviour
     public int maxHealth = 3;
     public int currentHealth;
     private Rigidbody2D rb;
+    [SerializeField] GameObject gameOverPanel;
     
     void Start()
     {
@@ -52,6 +53,7 @@ public class playerCombat : MonoBehaviour
         animator.SetTrigger("Death");
         this.GetComponent<Movement>().enabled = false;
         gameObject.layer = LayerMask.NameToLayer("Default"); // Change the player's layer to "Default"
+        Invoke("GameOver", 2f);
         this.enabled = false;
     }
 
@@ -64,6 +66,11 @@ public class playerCombat : MonoBehaviour
     {
         if (Attack == null) return;
         Gizmos.DrawWireSphere(Attack.position, attackRange);
+    }
+
+    void GameOver()
+    {
+        gameOverPanel.SetActive(true);
     }    
 }
 
