@@ -48,7 +48,12 @@ public class Bandit : MonoBehaviour {
             float distanceToPlayer = Vector2.Distance(player.transform.position, transform.position);
             if (aggro && player.GetComponent<playerCombat>().currentHealth > 0)
             {
-                if (player.transform.position.x > transform.position.x && attackCooldown > 0.9f)
+                if (distanceToPlayer <= attackRange && attackCooldown > 0.9f)
+                {
+                    moveDirection = 0; // Stop moving when in range of attack
+                    m_animator.SetTrigger("Attack");
+                }
+                else if (player.transform.position.x > transform.position.x && attackCooldown > 0.9f)
                 {
                     moveDirection = 1;
                 }

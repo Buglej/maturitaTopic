@@ -24,7 +24,6 @@ public class playerCombat : MonoBehaviour
         }
     }
 
-
     void attack()
     {
         animator.SetTrigger("Attack1");
@@ -52,6 +51,7 @@ public class playerCombat : MonoBehaviour
     {   
         animator.SetTrigger("Death");
         this.GetComponent<Movement>().enabled = false;
+        gameObject.layer = LayerMask.NameToLayer("Default"); // Change the player's layer to "Default"
         this.enabled = false;
     }
 
