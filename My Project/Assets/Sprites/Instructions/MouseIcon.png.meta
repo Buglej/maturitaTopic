@@ -1,10 +1,31 @@
 fileFormatVersion: 2
-guid: cf1ccc64ffefa0342a1a593b95259150
+guid: d1b4c261d565db44cbcc21170ea187da
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6899527831451061053
-    second: GameOver_0
+      213: 6672790543693851436
+    second: MouseIcon_0
+  - first:
+      213: 829481202538447507
+    second: MouseIcon_1
+  - first:
+      213: 6692110884318768045
+    second: MouseIcon_2
+  - first:
+      213: -1436568184834422663
+    second: MouseIcon_3
+  - first:
+      213: -3587928515132120709
+    second: MouseIcon_4
+  - first:
+      213: 4139503051886849754
+    second: MouseIcon_5
+  - first:
+      213: 1319557574678298528
+    second: MouseIcon_6
+  - first:
+      213: 3091217487204225636
+    second: MouseIcon_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,27 +117,62 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GameOver_0
+      name: MouseIcon_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 18
-        width: 331
-        height: 78
+        y: 0
+        width: 845
+        height: 1305
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3c430781ef3ff30a0800000000000000
-      internalID: -6899527831451061053
+      spriteID: ff0bd2e66c54e044197fb6044e068c32
+      internalID: -2005629372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MouseIcon_1
+      rect:
+        serializedVersion: 2
+        x: 1021
+        y: 0
+        width: 840
+        height: 1305
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0f6d5f43bdf2cc49bd8977e4dfc09d5
+      internalID: -1625281722
       vertices: []
       indices: 
       edges: []
@@ -125,7 +181,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ae08e2f0207f88247a535551c53d02bf
     internalID: 0
     vertices: []
     indices: 
@@ -134,7 +190,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      MouseIcon_0: -2005629372
+      MouseIcon_1: -1625281722
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
