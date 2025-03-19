@@ -9,6 +9,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private LayerMask cornerLayer;
     [SerializeField] private float knockbackForce = 5f; // Serialized field for knockback force
+    [SerializeField] private float gravityScale = 7f; // Serialized field for gravity scale
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D BoxCollider;
@@ -67,12 +68,12 @@ public class Movement : MonoBehaviour
 
                 if (onWall() && !isGrounded() && collection.collItems >= 1)
                 {
-                    body.gravityScale = 1;
+                    body.gravityScale = 2;
                     body.linearVelocity = Vector2.zero;
                     anim.SetBool("WallSlide", true);
                 }
                 else
-                    body.gravityScale = 7;
+                    body.gravityScale = gravityScale;
 
                 if (Input.GetButtonDown("Jump"))
                     Jump();
@@ -99,13 +100,14 @@ public class Movement : MonoBehaviour
         }
         else if (onWall() && !isGrounded() && collection.collItems >= 1)
         {
+            anim.SetBool("WallSlide", false);
             if (horizontalInput == 0) 
             {
-                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 6);
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, jumpPower*0.5f);
                 transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
             else
-                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 5, jumpPower*0.5f);
 
             wallJumpCooldown = 0;
         }
